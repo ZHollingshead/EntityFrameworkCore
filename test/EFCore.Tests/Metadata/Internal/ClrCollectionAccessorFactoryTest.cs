@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 using Xunit;
 
+// ReSharper disable InconsistentNaming
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 // ReSharper disable EmptyConstructor
@@ -49,9 +50,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
             public void AddRange(object instance, IEnumerable<object> values) => throw new NotImplementedException();
             public bool Contains(object instance, object value) => throw new NotImplementedException();
             public void Remove(object instance, object value) => throw new NotImplementedException();
-            public object Create() => throw new NotImplementedException();
-            public object Create(IEnumerable<object> values) => throw new NotImplementedException();
-            public object GetOrCreate(object instance) => throw new NotImplementedException();
+            public IEnumerable Create() => throw new NotImplementedException();
+            public IEnumerable Create(IEnumerable<object> values) => throw new NotImplementedException();
+            public IEnumerable GetOrCreate(object instance) => throw new NotImplementedException();
             public Type CollectionType { get; }
         }
 

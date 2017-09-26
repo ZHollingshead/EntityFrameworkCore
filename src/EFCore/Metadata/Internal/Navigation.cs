@@ -17,9 +17,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
     public class Navigation : PropertyBase, IMutableNavigation
     {
         // Warning: Never access these fields directly as access needs to be thread-safe
-        private IClrCollectionAccessor _collectionAccessor;
-
-        private PropertyIndexes _indexes;
+        private object _collectionAccessor;
 
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
@@ -194,35 +192,6 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public virtual PropertyIndexes PropertyIndexes
-        {
-            get
-            {
-                return NonCapturingLazyInitializer.EnsureInitialized(
-                    ref _indexes, this,
-                    property => property.DeclaringType.CalculateIndexes(property));
-            }
-
-            [param: CanBeNull]
-            set
-            {
-                if (value == null)
-                {
-                    // This path should only kick in when the model is still mutable and therefore access does not need
-                    // to be thread-safe.
-                    _indexes = null;
-                }
-                else
-                {
-                    NonCapturingLazyInitializer.EnsureInitialized(ref _indexes, value);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public virtual Navigation FindInverse()
             => (Navigation)((INavigation)this).FindInverse();
 
@@ -237,8 +206,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public virtual IClrCollectionAccessor CollectionAccessor
-            => NonCapturingLazyInitializer.EnsureInitialized(ref _collectionAccessor, this, n => new ClrCollectionAccessorFactory().Create(n));
+        public virtual object CollectionAccessor
+            => NonCapturingLazyInitializer.EnsureInitialized(ref _collectionAccessor, this, n =>
+                !n.IsCollection()
+                    ? null
+                    : n.IsShadowProperty
+                        ? new ShadowCollectionAccessorFactory().Create(n)
+                        : (object)new ClrCollectionAccessorFactory().Create(n));
 
         IForeignKey INavigation.ForeignKey => ForeignKey;
         IMutableForeignKey IMutableNavigation.ForeignKey => ForeignKey;

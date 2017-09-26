@@ -170,7 +170,7 @@ namespace Microsoft.EntityFrameworkCore.Query.Internal
                     Expression.Constant(navigation),
                     Expression.Constant(inverseNavigation, typeof(INavigation)),
                     Expression.Constant(navigation.GetTargetType()),
-                    Expression.Constant(navigation.GetCollectionAccessor()),
+                    Expression.Constant(navigation.GetClrCollectionAccessor()),
                     Expression.Constant(inverseNavigation?.GetSetter(), typeof(IClrPropertySetter)),
                     Expression.Constant(trackingQuery),
                     targetEntityExpression,
@@ -358,7 +358,7 @@ namespace Microsoft.EntityFrameworkCore.Query.Internal
                         blockExpressions.Add(
                             collection
                                 ? (Expression)Expression.Call(
-                                    Expression.Constant(inverseNavigation.GetCollectionAccessor()),
+                                    Expression.Constant(inverseNavigation.GetClrCollectionAccessor()),
                                     _collectionAccessorAddMethodInfo,
                                     relatedArrayAccessExpression,
                                     targetEntityExpression)

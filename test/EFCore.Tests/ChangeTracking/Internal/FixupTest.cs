@@ -2597,30 +2597,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_set_both_navs_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new Parent(77);
-                var dependent = new Child(78, 0);
-
-                context.Entry(principal).State = entityState;
-
-                dependent.SetParentId(principal.Id);
-                dependent.SetParent(principal);
-                principal.SetChild(dependent);
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Added, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: true, setToPrincipal: true, setToDependent: true);
         }
 
         [Theory]
@@ -2629,29 +2607,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_not_set_both_navs_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new Parent(77);
-                var dependent = new Child(78, 0);
-
-                context.Entry(principal).State = entityState;
-
-                dependent.SetParent(principal);
-                principal.SetChild(dependent);
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Added, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: false, setToPrincipal: true, setToDependent: true);
         }
 
         [Theory]
@@ -2660,28 +2617,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_set_no_navs_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new Parent(77);
-                var dependent = new Child(78, 0);
-
-                context.Entry(principal).State = entityState;
-
-                dependent.SetParentId(principal.Id);
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Null(dependent.Parent);
-                            Assert.Null(principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: true, setToPrincipal: false, setToDependent: false);
         }
 
         [Theory]
@@ -2690,29 +2627,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_set_principal_nav_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new Parent(77);
-                var dependent = new Child(78, 0);
-
-                context.Entry(principal).State = entityState;
-
-                dependent.SetParentId(principal.Id);
-                principal.SetChild(dependent);
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Added, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: true, setToPrincipal: false, setToDependent: true);
         }
 
         [Theory]
@@ -2721,29 +2637,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_set_dependent_nav_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new Parent(77);
-                var dependent = new Child(78, 0);
-
-                context.Entry(principal).State = entityState;
-
-                dependent.SetParentId(principal.Id);
-                dependent.SetParent(principal);
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Null(principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: true, setToPrincipal: true, setToDependent: false);
         }
 
         [Theory]
@@ -2752,28 +2647,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_not_set_principal_nav_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new Parent(77);
-                var dependent = new Child(78, 0);
-
-                context.Entry(principal).State = entityState;
-
-                principal.SetChild(dependent);
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Added, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: false, setToPrincipal: false, setToDependent: true);
         }
 
         [Theory]
@@ -2782,6 +2657,13 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(EntityState entityState)
         {
+            Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+                entityState, setFk: false, setToPrincipal: true, setToDependent: false);
+        }
+
+        private void Add_principal_but_not_dependent_one_to_one_FK_not_set_dependent_nav_set(
+            EntityState entityState, bool setFk, bool setToPrincipal, bool setToDependent)
+        {
             using (var context = new FixupContext())
             {
                 var principal = new Parent(77);
@@ -2789,7 +2671,18 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
 
                 context.Entry(principal).State = entityState;
 
-                dependent.SetParent(principal);
+                if (setFk)
+                {
+                    dependent.SetParentId(principal.Id);
+                }
+                if (setToPrincipal)
+                {
+                    dependent.SetParent(principal);
+                }
+                if (setToDependent)
+                {
+                    principal.SetChild(dependent);
+                }
 
                 context.ChangeTracker.DetectChanges();
 
@@ -2797,11 +2690,11 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
                     context,
                     () =>
                         {
-                            Assert.Equal(0, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Null(principal.Child);
+                            Assert.Equal(setToDependent || setFk ? principal.Id : 0, dependent.ParentId);
+                            Assert.Same(setToDependent || setToPrincipal ? principal : null, dependent.Parent);
+                            Assert.Same(setToDependent ? dependent : null, principal.Child);
                             Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
+                            Assert.Equal(setToDependent ? EntityState.Added : EntityState.Detached, context.Entry(dependent).State);
                         });
             }
         }
@@ -2812,6 +2705,29 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_dependent_but_not_principal_one_to_one_prin_uni_FK_set_no_navs_set(EntityState entityState)
         {
+            Add_dependent_but_not_principal_one_to_one_prin_uni(entityState, setFk: true, setToDependent: false);
+        }
+
+        [Theory]
+        [InlineData(EntityState.Added)]
+        [InlineData(EntityState.Modified)]
+        [InlineData(EntityState.Unchanged)]
+        public void Add_dependent_but_not_principal_one_to_one_prin_uni_FK_set_principal_nav_set(EntityState entityState)
+        {
+            Add_dependent_but_not_principal_one_to_one_prin_uni(entityState, setFk: true, setToDependent: true);
+        }
+
+        [Theory]
+        [InlineData(EntityState.Added)]
+        [InlineData(EntityState.Modified)]
+        [InlineData(EntityState.Unchanged)]
+        public void Add_dependent_but_not_principal_one_to_one_prin_uni_FK_not_set_principal_nav_set(EntityState entityState)
+        {
+            Add_dependent_but_not_principal_one_to_one_prin_uni(entityState, setFk: false, setToDependent: true);
+        }
+
+        private void Add_dependent_but_not_principal_one_to_one_prin_uni(EntityState entityState, bool setFk, bool setToDependent)
+        {
             using (var context = new FixupContext())
             {
                 var principal = new ParentPN { Id = 77 };
@@ -2819,7 +2735,14 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
 
                 context.Entry(dependent).State = entityState;
 
-                dependent.ParentId = principal.Id;
+                if (setFk)
+                {
+                    dependent.ParentId = principal.Id;
+                }
+                if (setToDependent)
+                {
+                    principal.Child = dependent;
+                }
 
                 context.ChangeTracker.DetectChanges();
 
@@ -2827,10 +2750,11 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
                     context,
                     () =>
                         {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Null(principal.Child);
+                            Assert.Equal(setFk ? principal.Id : 0, dependent.ParentId);
+                            Assert.Same(setToDependent ? dependent : null, principal.Child);
                             Assert.Equal(EntityState.Detached, context.Entry(principal).State);
-                            Assert.Equal(entityState == EntityState.Added ? EntityState.Added : EntityState.Modified, context.Entry(dependent).State);
+                            Assert.Equal(entityState == EntityState.Unchanged && setFk ? EntityState.Modified : entityState,
+                                context.Entry(dependent).State);
                         });
             }
         }
@@ -2841,86 +2765,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_prin_uni_FK_set_no_navs_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentPN { Id = 77 };
-                var dependent = new ChildPN { Id = 78 };
-
-                context.Entry(principal).State = entityState;
-
-                dependent.ParentId = principal.Id;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Null(principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
-                        });
-            }
-        }
-
-        [Theory]
-        [InlineData(EntityState.Added)]
-        [InlineData(EntityState.Modified)]
-        [InlineData(EntityState.Unchanged)]
-        public void Add_dependent_but_not_principal_one_to_one_prin_uni_FK_set_principal_nav_set(EntityState entityState)
-        {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentPN { Id = 77 };
-                var dependent = new ChildPN { Id = 78 };
-
-                context.Entry(dependent).State = entityState;
-
-                dependent.ParentId = principal.Id;
-                principal.Child = dependent;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(EntityState.Detached, context.Entry(principal).State);
-                            Assert.Equal(entityState == EntityState.Added ? EntityState.Added : EntityState.Modified, context.Entry(dependent).State);
-                        });
-            }
-        }
-
-        [Theory]
-        [InlineData(EntityState.Added)]
-        [InlineData(EntityState.Modified)]
-        [InlineData(EntityState.Unchanged)]
-        public void Add_dependent_but_not_principal_one_to_one_prin_uni_FK_not_set_principal_nav_set(EntityState entityState)
-        {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentPN { Id = 77 };
-                var dependent = new ChildPN { Id = 78 };
-
-                context.Entry(dependent).State = entityState;
-
-                principal.Child = dependent;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(0, dependent.ParentId);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(EntityState.Detached, context.Entry(principal).State);
-                            Assert.Equal(entityState, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_prin_uni(entityState, setFk: true, setToDependent: false);
         }
 
         [Theory]
@@ -2929,28 +2774,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_prin_uni_FK_set_principal_nav_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentPN { Id = 77 };
-                var dependent = new ChildPN { Id = 78 };
-
-                context.Entry(principal).State = entityState;
-
-                dependent.ParentId = principal.Id;
-                principal.Child = dependent;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(dependent, principal.Child);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Added, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_prin_uni(entityState, setFk: true, setToDependent: true);
         }
 
         [Theory]
@@ -2959,6 +2783,11 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_prin_uni_FK_not_set_principal_nav_set(EntityState entityState)
         {
+            Add_principal_but_not_dependent_one_to_one_prin_uni(entityState, setFk: false, setToDependent: true);
+        }
+
+        private void Add_principal_but_not_dependent_one_to_one_prin_uni(EntityState entityState, bool setFk, bool setToDependent)
+        {
             using (var context = new FixupContext())
             {
                 var principal = new ParentPN { Id = 77 };
@@ -2966,7 +2795,14 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
 
                 context.Entry(principal).State = entityState;
 
-                principal.Child = dependent;
+                if (setFk)
+                {
+                    dependent.ParentId = principal.Id;
+                }
+                if (setToDependent)
+                {
+                    principal.Child = dependent;
+                }
 
                 context.ChangeTracker.DetectChanges();
 
@@ -2975,9 +2811,9 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
                     () =>
                         {
                             Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(dependent, principal.Child);
+                            Assert.Same(setToDependent ? dependent : null, principal.Child);
                             Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Added, context.Entry(dependent).State);
+                            Assert.Equal(setToDependent ? EntityState.Added : EntityState.Detached, context.Entry(dependent).State);
                         });
             }
         }
@@ -2988,27 +2824,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_dependent_but_not_principal_one_to_one_dep_uni_FK_set_no_navs_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentDN { Id = 77 };
-                var dependent = new ChildDN { Id = 78 };
-
-                context.Entry(dependent).State = entityState;
-
-                dependent.ParentId = principal.Id;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Null(dependent.Parent);
-                            Assert.Equal(EntityState.Detached, context.Entry(principal).State);
-                            Assert.Equal(entityState == EntityState.Added ? EntityState.Added : EntityState.Modified, context.Entry(dependent).State);
-                        });
-            }
+            Add_dependent_but_not_principal_one_to_one_dep_uni(entityState, setFk: true, setToPrincipal: false);
         }
 
         [Theory]
@@ -3017,28 +2833,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_dependent_but_not_principal_one_to_one_dep_uni_FK_set_dependent_nav_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentDN { Id = 77 };
-                var dependent = new ChildDN { Id = 78 };
-
-                context.Entry(dependent).State = entityState;
-
-                dependent.ParentId = principal.Id;
-                dependent.Parent = principal;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Equal(EntityState.Added, context.Entry(principal).State);
-                            Assert.Equal(entityState == EntityState.Added ? EntityState.Added : EntityState.Modified, context.Entry(dependent).State);
-                        });
-            }
+            Add_dependent_but_not_principal_one_to_one_dep_uni(entityState, setFk: true, setToPrincipal: true);
         }
 
         [Theory]
@@ -3047,6 +2842,11 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_dependent_but_not_principal_one_to_one_dep_uni_FK_not_set_dependent_nav_set(EntityState entityState)
         {
+            Add_dependent_but_not_principal_one_to_one_dep_uni(entityState, setFk: false, setToPrincipal: true);
+        }
+
+        private void Add_dependent_but_not_principal_one_to_one_dep_uni(EntityState entityState, bool setFk, bool setToPrincipal)
+        {
             using (var context = new FixupContext())
             {
                 var principal = new ParentDN { Id = 77 };
@@ -3054,7 +2854,14 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
 
                 context.Entry(dependent).State = entityState;
 
-                dependent.Parent = principal;
+                if (setFk)
+                {
+                    dependent.ParentId = principal.Id;
+                }
+                if (setToPrincipal)
+                {
+                    dependent.Parent = principal;
+                }
 
                 context.ChangeTracker.DetectChanges();
 
@@ -3063,8 +2870,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
                     () =>
                         {
                             Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Equal(EntityState.Added, context.Entry(principal).State);
+                            Assert.Same(setToPrincipal ? principal : null, dependent.Parent);
+                            Assert.Equal(setToPrincipal ? EntityState.Added : EntityState.Detached, context.Entry(principal).State);
                             Assert.Equal(entityState == EntityState.Added ? EntityState.Added : EntityState.Modified, context.Entry(dependent).State);
                         });
             }
@@ -3076,27 +2883,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_dep_uni_FK_set_no_navs_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentDN { Id = 77 };
-                var dependent = new ChildDN { Id = 78 };
-
-                context.Entry(principal).State = entityState;
-
-                dependent.ParentId = principal.Id;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Null(dependent.Parent);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_dep_uni(entityState, setFk: true, setToPrincipal: false);
         }
 
         [Theory]
@@ -3105,28 +2892,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_dep_uni_FK_set_dependent_nav_set(EntityState entityState)
         {
-            using (var context = new FixupContext())
-            {
-                var principal = new ParentDN { Id = 77 };
-                var dependent = new ChildDN { Id = 78 };
-
-                context.Entry(principal).State = entityState;
-
-                dependent.ParentId = principal.Id;
-                dependent.Parent = principal;
-
-                context.ChangeTracker.DetectChanges();
-
-                AssertFixup(
-                    context,
-                    () =>
-                        {
-                            Assert.Equal(principal.Id, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
-                            Assert.Equal(entityState, context.Entry(principal).State);
-                            Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
-                        });
-            }
+            Add_principal_but_not_dependent_one_to_one_dep_uni(entityState, setFk: true, setToPrincipal: true);
         }
 
         [Theory]
@@ -3135,6 +2901,11 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
         [InlineData(EntityState.Unchanged)]
         public void Add_principal_but_not_dependent_one_to_one_dep_uni_FK_not_set_dependent_nav_set(EntityState entityState)
         {
+            Add_principal_but_not_dependent_one_to_one_dep_uni(entityState, setFk: false, setToPrincipal: true);
+        }
+
+        private void Add_principal_but_not_dependent_one_to_one_dep_uni(EntityState entityState, bool setFk, bool setToPrincipal)
+        {
             using (var context = new FixupContext())
             {
                 var principal = new ParentDN { Id = 77 };
@@ -3142,7 +2913,14 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
 
                 context.Entry(principal).State = entityState;
 
-                dependent.Parent = principal;
+                if (setFk)
+                {
+                    dependent.ParentId = principal.Id;
+                }
+                if (setToPrincipal)
+                {
+                    dependent.Parent = principal;
+                }
 
                 context.ChangeTracker.DetectChanges();
 
@@ -3150,8 +2928,8 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
                     context,
                     () =>
                         {
-                            Assert.Equal(0, dependent.ParentId);
-                            Assert.Same(principal, dependent.Parent);
+                            Assert.Equal(setFk ? principal.Id: 0, dependent.ParentId);
+                            Assert.Same(setToPrincipal ? principal : null, dependent.Parent);
                             Assert.Equal(entityState, context.Entry(principal).State);
                             Assert.Equal(EntityState.Detached, context.Entry(dependent).State);
                         });
@@ -3772,7 +3550,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
             }
         }
 
-        private void AssertAllFixedUp(DbContext context)
+        protected virtual void AssertAllFixedUp(DbContext context)
         {
             foreach (var entry in context.ChangeTracker.Entries<Product>())
             {
@@ -4148,6 +3926,7 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
             [Key]
             public string Name { get; set; }
 
+            // ReSharper disable once CollectionNeverUpdated.Local
             public ICollection<TestClass> Classes { get; } = new List<TestClass>();
         }
 

@@ -135,7 +135,7 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors
             IAsyncEnumerable<object> elements,
             CancellationToken cancellationToken)
         {
-            var collection = (ICollection<TEntity>) navigation.GetCollectionAccessor().Create();
+            var collection = (ICollection<TEntity>) navigation.GetClrCollectionAccessor().Create();
 
             await elements.ForEachAsync(e => collection.Add((TEntity) e), cancellationToken);
 

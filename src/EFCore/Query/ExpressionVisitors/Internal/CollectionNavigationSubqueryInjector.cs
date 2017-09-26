@@ -155,7 +155,7 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal
             var subqueryModel = new QueryModel(mainFromClause, new SelectClause(selector));
             var subqueryExpression = new SubQueryExpression(subqueryModel);
 
-            var resultCollectionType = collectionNavigation.GetCollectionAccessor().CollectionType;
+            var resultCollectionType = collectionNavigation.GetClrCollectionAccessor().CollectionType;
 
             var result = Expression.Call(
                 MaterializeCollectionNavigationMethodInfo.MakeGenericMethod(targetType),
@@ -171,7 +171,7 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal
             INavigation navigation,
             IEnumerable<object> elements)
         {
-            var collection = navigation.GetCollectionAccessor().Create(elements);
+            var collection = navigation.GetClrCollectionAccessor().Create(elements);
 
             return (ICollection<TEntity>)collection;
         }

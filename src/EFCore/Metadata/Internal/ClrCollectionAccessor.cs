@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -12,7 +13,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
     ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
     ///     directly from your code. This API may change or be removed in future releases.
     /// </summary>
-    public class ClrICollectionAccessor<TEntity, TCollection, TElement> : IClrCollectionAccessor
+    public class ClrCollectionAccessor<TEntity, TCollection, TElement> : IClrCollectionAccessor
         where TEntity : class
         where TCollection : class, IEnumerable<TElement>
     {
@@ -32,7 +33,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public ClrICollectionAccessor(
+        public ClrCollectionAccessor(
             [NotNull] string propertyName,
             [NotNull] Func<TEntity, TCollection> getCollection,
             [CanBeNull] Action<TEntity, TCollection> setCollection,
@@ -84,7 +85,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public virtual object Create()
+        public virtual IEnumerable Create()
         {
             if (_createCollection == null)
             {
@@ -100,7 +101,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public virtual object Create(IEnumerable<object> values)
+        public virtual IEnumerable Create(IEnumerable<object> values)
         {
             var collection = (ICollection<TElement>)Create();
             foreach (TElement value in values)
@@ -115,7 +116,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public virtual object GetOrCreate(object instance) => GetOrCreateCollection(instance);
+        public virtual IEnumerable GetOrCreate(object instance) => GetOrCreateCollection(instance);
 
         private ICollection<TElement> GetOrCreateCollection(object instance)
         {

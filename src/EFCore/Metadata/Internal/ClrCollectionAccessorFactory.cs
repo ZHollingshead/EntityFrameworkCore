@@ -32,8 +32,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         public virtual IClrCollectionAccessor Create([NotNull] INavigation navigation)
         {
             // ReSharper disable once SuspiciousTypeConversion.Global
-            var accessor = navigation as IClrCollectionAccessor;
-            if (accessor != null)
+            if (navigation is IClrCollectionAccessor accessor)
             {
                 return accessor;
             }
@@ -119,7 +118,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
                 }
             }
 
-            return new ClrICollectionAccessor<TEntity, TCollection, TElement>(
+            return new ClrCollectionAccessor<TEntity, TCollection, TElement>(
                 navigation.Name, getterDelegate, setterDelegate, createAndSetDelegate, createDelegate);
         }
 

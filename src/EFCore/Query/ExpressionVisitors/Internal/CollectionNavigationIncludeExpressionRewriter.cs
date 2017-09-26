@@ -79,7 +79,7 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal
 
                 var parameter = Expression.Parameter(querySource.ItemType, querySource.ItemName);
                 var accessorBody = BuildCollectionAccessorExpression(parameter, properties);
-                var emptyCollection = lastNavigation.GetCollectionAccessor().Create();
+                var emptyCollection = lastNavigation.GetClrCollectionAccessor().Create();
 
                 return Expression.Call(
                     ProjectCollectionNavigationMethodInfo

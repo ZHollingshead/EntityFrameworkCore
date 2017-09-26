@@ -12,31 +12,31 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
     ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
     ///     directly from your code. This API may change or be removed in future releases.
     /// </summary>
-    public interface IClrCollectionAccessor
+    public interface IShadowCollectionAccessor
     {
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        bool Add([NotNull] object instance, [NotNull] object value);
+        bool Add([NotNull] object collection, [NotNull] object value);
 
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        void AddRange([NotNull] object instance, [NotNull] IEnumerable<object> values);
+        void AddRange([NotNull] object collection, [NotNull] IEnumerable<object> values);
 
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        bool Contains([NotNull] object instance, [NotNull] object value);
+        bool Contains([NotNull] object collection, [NotNull] object value);
 
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        void Remove([NotNull] object instance, [NotNull] object value);
+        void Remove([NotNull] object collection, [NotNull] object value);
 
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
@@ -49,12 +49,6 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         IEnumerable Create([NotNull] IEnumerable<object> values);
-
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        IEnumerable GetOrCreate([NotNull] object instance);
 
         /// <summary>
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
